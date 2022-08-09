@@ -59,6 +59,10 @@ namespace Users.webAPI.Repositories
 
                 novoUsuario.ImagemPerfil = uploadResultado;
             }
+            else
+            {
+                novoUsuario.ImagemPerfil = "perfilSemFoto.png";
+            }
 
             ctx.Usuarios.Add(novoUsuario);
             ctx.SaveChanges();

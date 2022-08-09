@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Users.webAPI.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class UsuariosController : ControllerBase
     {
@@ -21,12 +23,13 @@ namespace Users.webAPI.Controllers
             _usuarioRepository = repository;
         }
 
+        [Authorize(Roles = "01f6ca89-8f02-43bb-9f2f-b1886321ad00,862f0a4e-fd18-4ca6-a522-3ebe1fc8e5f5")]
         [HttpPost]
         public IActionResult Cadastrar([FromForm] Usuario usuario, IFormFile imagem)
         {
             try
             {
-                if (usuario.Email != null && usuario.IdTipoUsuario != null && usuario.Nome != null && usuario.Senha != null && (usuario.StatusUsuario == true || usuario.StatusUsuario == false) && imagem != null)
+                if (usuario.Email != null && usuario.IdTipoUsuario != null && usuario.Nome != null && usuario.Senha != null && (usuario.StatusUsuario == true || usuario.StatusUsuario == false))
                 {
                     _usuarioRepository.Cadastrar(usuario, imagem);
                     return StatusCode(201);
@@ -40,6 +43,7 @@ namespace Users.webAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "01f6ca89-8f02-43bb-9f2f-b1886321ad00,862f0a4e-fd18-4ca6-a522-3ebe1fc8e5f5")]
         [HttpGet]
         public IActionResult ListarTodos()
         {
@@ -74,7 +78,7 @@ namespace Users.webAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Atualizar([FromForm] Guid id, Usuario usuario, IFormFile imagem)
+        public IActionResult Atualizar([FromForm] Usuario usuario, IFormFile imagem, Guid id)
         {
             try
             {
@@ -82,7 +86,7 @@ namespace Users.webAPI.Controllers
 
                 if (usuarioBanco != null)
                 {
-                    if (usuario.Email != null && usuario.IdTipoUsuario != null && usuario.Nome != null && usuario.Senha != null && (usuario.StatusUsuario == true || usuario.StatusUsuario == false) && imagem != null)
+                    if (usuario.Email != null && usuario.IdTipoUsuario != null && usuario.Nome != null && usuario.Senha != null && (usuario.StatusUsuario == true || usuario.StatusUsuario == false))
                     {
                         _usuarioRepository.Atualizar(id, usuario, imagem);
                         return Ok();
@@ -98,6 +102,7 @@ namespace Users.webAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "01f6ca89-8f02-43bb-9f2f-b1886321ad00")]
         [HttpDelete("{id}")]
         public IActionResult Deletar(Guid id)
         {
